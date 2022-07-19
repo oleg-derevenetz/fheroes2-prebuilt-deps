@@ -11,12 +11,16 @@ set OUTPUT_DIR=%~3
 
 set TRIPLET=%PLATFORM%-windows
 
+echo Building dependencies...
+
 "%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install fluidsynth[buildtools,sndfile] sdl2 sdl2-mixer[fluidsynth,nativemidi] sdl2-image zlib || ^
 exit /B 1
 
 if not exist "%OUTPUT_DIR%\include"        ( mkdir "%OUTPUT_DIR%\include"        || exit /B 1 )
 if not exist "%OUTPUT_DIR%\include\SDL2"   ( mkdir "%OUTPUT_DIR%\include\SDL2"   || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%" || exit /B 1 )
+
+echo Copying files...
 
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\FLAC*.dll"          "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\gio*.dll"           "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
