@@ -102,7 +102,7 @@ jobs:
       if: ${{ github.event_name == 'push' }}
       run: |
         cd .output
-        zip windows.zip sdl1 sdl2
+        zip -r windows.zip sdl1 sdl2
     - uses: ncipollo/release-action@v1
       if: ${{ github.event_name == 'push' }}
       with:
