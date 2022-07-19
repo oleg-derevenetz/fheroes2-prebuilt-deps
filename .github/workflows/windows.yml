@@ -1,0 +1,116 @@
+name: Windows
+
+on:
+  workflow_call:
+
+env:
+  VCPKG_REPO: microsoft/vcpkg
+  # 19.07.2022
+  VCPKG_REF: ebf637bedb9c32bea2176f4488037875c0e935ba
+
+jobs:
+  sdl1:
+    name: Create SDL1 package
+    runs-on: windows-2019
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create a package directory
+      run: |
+        mkdir -p .output/sdl1
+    - name: Download dependencies
+      run: |
+        windows/sdl1.bat packages/windows .output/sdl1
+    - uses: actions/upload-artifact@v2
+      with:
+        name: sdl1
+        path: .output/sdl1
+  sdl2:
+    strategy:
+      matrix:
+        arch: [x86, x64]
+    name: Create SDL2 ${{ matrix.arch }} package
+    runs-on: windows-2019
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create a package directory
+      run: |
+        mkdir -p .output/sdl2
+    - name: Prepare vcpkg cache
+      uses: actions/cache@v3
+      with:
+        path: ~/AppData/Local/vcpkg/archives
+        key: windows-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-${{ github.sha }}
+        restore-keys: |
+          windows-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-
+          windows-vcpkg-cache-${{ matrix.arch }}-
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ env.VCPKG_REPO }}
+        ref: ${{ env.VCPKG_REF }}
+        path: .vcpkg
+    - name: Bootstrap vcpkg
+      run: |
+        .vcpkg/bootstrap-vcpkg.bat
+    - name: Build dependencies
+      run: |
+        windows/sdl2.bat .vcpkg ${{ matrix.arch }} .output/sdl2
+    - name: Get a list of files installed by vcpkg
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v2
+      if: ${{ github.event_name == 'pull_request' }}
+      with:
+        name: sdl2-${{ matrix.arch }}-vcpkg-installed-files
+        path: .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v2
+      with:
+        name: sdl2-${{ matrix.arch }}
+        path: .output/sdl2
+  merge:
+    name: Merge and upload package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [sdl1, sdl2]
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: sdl1
+        path: .output/sdl1
+    - uses: actions/download-artifact@v2
+      with:
+        name: sdl2-x86
+        path: .output/sdl2
+    - uses: actions/download-artifact@v2
+      with:
+        name: sdl2-x64
+        path: .output/sdl2
+    - uses: actions/upload-artifact@v2
+      if: ${{ github.event_name == 'pull_request' }}
+      with:
+        name: windows
+        path: .output
+    - name: Create a combined package
+      if: ${{ github.event_name == 'push' }}
+      run: |
+        cd .output
+        zip windows.zip sdl1 sdl2
+    - uses: ncipollo/release-action@v1
+      if: ${{ github.event_name == 'push' }}
+      with:
+        artifacts: .output/windows.zip
+        body: This is a pre-built dependency package for the fheroes2 build for Windows
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Pre-built dependency package for Windows build
+        tag: windows-deps
+        allowUpdates: true
+        artifactErrorsFailBuild: true
+        replacesArtifacts: true
