@@ -1,14 +1,12 @@
 @echo off
 
-if "%~2"=="" (
-    echo Syntax: %~n0%~x0 ZLIB_FILE_DIR OUTPUT_DIR
+if "%~1"=="" (
+    echo Syntax: %~n0%~x0 OUTPUT_DIR
     exit /B 1
 )
 
-set ZLIB_FILE_DIR=%~1
-set OUTPUT_DIR=%~2
+set OUTPUT_DIR=%~1
 
-set ZLIB_FILE=zlib1.2.11.zip
 set SDL_FILE=SDL-devel-1.2.15-VC.zip
 set SDL_MIXER_FILE=SDL_mixer-devel-1.2.12-VC.zip
 
@@ -25,9 +23,8 @@ if not exist "%OUTPUT_DIR%\include"        ( mkdir "%OUTPUT_DIR%\include"       
 if not exist "%OUTPUT_DIR%\include\SDL"    ( mkdir "%OUTPUT_DIR%\include\SDL"    || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%" || exit /B 1 )
 
-call :unpack_archive "%ZLIB_FILE_DIR%\%ZLIB_FILE%" "%OUTPUT_DIR%" && ^
-call :unpack_archive "%TEMP%\%SDL_FILE%"           "%TEMP%"         && ^
-call :unpack_archive "%TEMP%\%SDL_MIXER_FILE%"     "%TEMP%"         || ^
+call :unpack_archive "%TEMP%\%SDL_FILE%"       "%TEMP%" && ^
+call :unpack_archive "%TEMP%\%SDL_MIXER_FILE%" "%TEMP%" || ^
 exit /B 1
 
 echo Copying files...

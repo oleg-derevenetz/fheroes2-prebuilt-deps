@@ -21,9 +21,9 @@ jobs:
     - name: Create a package directory
       run: |
         mkdir -p .output/sdl1
-    - name: Download dependencies
+    - name: Download binary packages
       run: |
-        windows/sdl1.bat packages/windows .output/sdl1
+        windows/sdl1.bat .output/sdl1
     - uses: actions/upload-artifact@v2
       with:
         name: sdl1
@@ -47,10 +47,10 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/AppData/Local/vcpkg/archives
-        key: windows-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-${{ github.sha }}
+        key: windows-sdl2-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-${{ github.sha }}
         restore-keys: |
-          windows-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-
-          windows-vcpkg-cache-${{ matrix.arch }}-
+          windows-sdl2-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-
+          windows-sdl2-vcpkg-cache-${{ matrix.arch }}-
     - uses: actions/checkout@v3
       with:
         repository: ${{ env.VCPKG_REPO }}
@@ -59,7 +59,7 @@ jobs:
     - name: Bootstrap vcpkg
       run: |
         .vcpkg/bootstrap-vcpkg.bat
-    - name: Build dependencies
+    - name: Build
       run: |
         windows/sdl2.bat .vcpkg ${{ matrix.arch }} .output/sdl2
     - name: Get a list of files installed by vcpkg
@@ -75,11 +75,58 @@ jobs:
       with:
         name: sdl2-${{ matrix.arch }}
         path: .output/sdl2
+  zlib:
+    strategy:
+      matrix:
+        arch: [x86, x64]
+    name: Create zlib ${{ matrix.arch }} package
+    runs-on: windows-2019
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create a package directory
+      run: |
+        mkdir -p .output/zlib
+    - name: Prepare vcpkg cache
+      uses: actions/cache@v3
+      with:
+        path: ~/AppData/Local/vcpkg/archives
+        key: windows-zlib-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-${{ github.sha }}
+        restore-keys: |
+          windows-zlib-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-
+          windows-zlib-vcpkg-cache-${{ matrix.arch }}-
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ env.VCPKG_REPO }}
+        ref: ${{ env.VCPKG_REF }}
+        path: .vcpkg
+    - name: Bootstrap vcpkg
+      run: |
+        .vcpkg/bootstrap-vcpkg.bat
+    - name: Build
+      run: |
+        windows/zlib.bat .vcpkg ${{ matrix.arch }} .output/zlib
+    - name: Get a list of files installed by vcpkg
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v2
+      if: ${{ github.event_name == 'pull_request' }}
+      with:
+        name: zlib-${{ matrix.arch }}-vcpkg-installed-files
+        path: .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v2
+      with:
+        name: zlib-${{ matrix.arch }}
+        path: .output/zlib
   merge:
     name: Merge and upload package
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [sdl1, sdl2]
+    needs: [sdl1, sdl2, zlib]
     steps:
     - uses: actions/download-artifact@v2
       with:
@@ -93,6 +140,14 @@ jobs:
       with:
         name: sdl2-x64
         path: .output/sdl2
+    - uses: actions/download-artifact@v2
+      with:
+        name: zlib-x86
+        path: .output/sdl1
+    - uses: actions/download-artifact@v2
+      with:
+        name: zlib-x64
+        path: .output/sdl1
     - uses: actions/upload-artifact@v2
       if: ${{ github.event_name == 'pull_request' }}
       with:

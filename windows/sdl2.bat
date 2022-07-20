@@ -11,7 +11,7 @@ set OUTPUT_DIR=%~3
 
 set TRIPLET=%PLATFORM%-windows
 
-echo Building dependencies...
+echo Building sdl2 and dependencies...
 
 "%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install fluidsynth[buildtools,sndfile] sdl2 sdl2-mixer[fluidsynth,nativemidi] sdl2-image zlib || ^
 exit /B 1
