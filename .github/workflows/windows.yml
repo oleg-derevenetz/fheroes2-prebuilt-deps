@@ -28,6 +28,7 @@ jobs:
       with:
         name: sdl1
         path: .output/sdl1
+        if-no-files-found: error
   sdl2:
     strategy:
       matrix:
@@ -63,11 +64,11 @@ jobs:
       run: |
         windows/sdl2.bat .vcpkg ${{ matrix.arch }} .output/sdl2
     - name: Get a list of files installed by vcpkg
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       run: |
         ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
     - uses: actions/upload-artifact@v2
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
         name: sdl2-${{ matrix.arch }}-vcpkg-installed-files
         path: .vcpkg/installed_files.txt
@@ -75,6 +76,7 @@ jobs:
       with:
         name: sdl2-${{ matrix.arch }}
         path: .output/sdl2
+        if-no-files-found: error
   zlib:
     strategy:
       matrix:
@@ -110,11 +112,11 @@ jobs:
       run: |
         windows/zlib.bat .vcpkg ${{ matrix.arch }} .output/zlib
     - name: Get a list of files installed by vcpkg
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       run: |
         ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
     - uses: actions/upload-artifact@v2
-      if: ${{ github.event_name == 'pull_request' }}
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
         name: zlib-${{ matrix.arch }}-vcpkg-installed-files
         path: .vcpkg/installed_files.txt
@@ -122,6 +124,7 @@ jobs:
       with:
         name: zlib-${{ matrix.arch }}
         path: .output/zlib
+        if-no-files-found: error
   merge:
     name: Merge and upload package
     runs-on: ubuntu-latest
@@ -153,6 +156,7 @@ jobs:
       with:
         name: windows
         path: .output
+        if-no-files-found: error
     - name: Create a combined package
       if: ${{ github.event_name == 'push' }}
       run: |
