@@ -4,9 +4,9 @@ on:
   workflow_call:
 
 env:
-  VCPKG_REPO: microsoft/vcpkg
+  VCPKG_REPO: oleg-derevenetz/vcpkg
   # 19.07.2022
-  VCPKG_REF: ebf637bedb9c32bea2176f4488037875c0e935ba
+  VCPKG_REF: fluidsynth-2.2.8
 
 jobs:
   sdl1:
