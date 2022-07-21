@@ -41,7 +41,8 @@ exit /B
 
 echo Downloading %~1
 
-powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%~1', '%~2')" || exit /B 1
+powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%~1', '%~2')" || ^
+exit /B 1
 
 set HASH_CALCULATED=false
 
@@ -65,6 +66,7 @@ exit /B
 
 echo Unpacking %~n1%~x1
 
-powershell -Command "Expand-Archive -LiteralPath '%~1' -DestinationPath '%~2' -Force" || exit /B 1
+powershell -Command "Expand-Archive -LiteralPath '%~1' -DestinationPath '%~2' -Force" || ^
+exit /B 1
 
 exit /B

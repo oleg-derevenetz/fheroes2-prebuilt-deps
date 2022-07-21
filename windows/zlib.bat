@@ -21,12 +21,18 @@ echo Building zlib...
 "%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install zlib || ^
 exit /B 1
 
-if not exist "%OUTPUT_DIR%\include"        ( mkdir "%OUTPUT_DIR%\include"        || exit /B 1 )
-if not exist "%OUTPUT_DIR%\lib\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%" || exit /B 1 )
+if not exist "%OUTPUT_DIR%\debug\lib\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\debug\lib\%PLATFORM%" || exit /B 1 )
+if not exist "%OUTPUT_DIR%\debug\pdb\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\debug\pdb\%PLATFORM%" || exit /B 1 )
+if not exist "%OUTPUT_DIR%\include"              ( mkdir "%OUTPUT_DIR%\include"              || exit /B 1 )
+if not exist "%OUTPUT_DIR%\lib\%PLATFORM%"       ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%"       || exit /B 1 )
+if not exist "%OUTPUT_DIR%\pdb\%PLATFORM%"       ( mkdir "%OUTPUT_DIR%\pdb\%PLATFORM%"       || exit /B 1 )
 
 echo Copying files...
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\zlib*.dll" "%OUTPUT_DIR%\lib\%PLATFORM%" || ^
+call :copy_dll "zlib*" || ^
+exit /B 1
+
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\zlib*.lib" "%OUTPUT_DIR%\debug\lib\%PLATFORM%" || ^
 exit /B 1
 
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\zconf.h" "%OUTPUT_DIR%\include" && ^
@@ -35,3 +41,15 @@ exit /B 1
 
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\zlib*.lib" "%OUTPUT_DIR%\lib\%PLATFORM%" || ^
 exit /B 1
+
+exit /B
+
+:copy_dll
+
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\bin\%~1.dll" "%OUTPUT_DIR%\debug\lib\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\bin\%~1.pdb" "%OUTPUT_DIR%\debug\pdb\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\%~1.dll"       "%OUTPUT_DIR%\lib\%PLATFORM%"       && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\%~1.pdb"       "%OUTPUT_DIR%\pdb\%PLATFORM%"       || ^
+exit /B 1
+
+exit /B
