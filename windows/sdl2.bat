@@ -21,12 +21,10 @@ echo Building sdl2 and dependencies...
 "%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install fluidsynth[buildtools,sndfile] sdl2 sdl2-mixer[fluidsynth,nativemidi] sdl2-image zlib || ^
 exit /B 1
 
-if not exist "%OUTPUT_DIR%\debug\lib\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\debug\lib\%PLATFORM%" || exit /B 1 )
-if not exist "%OUTPUT_DIR%\debug\pdb\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\debug\pdb\%PLATFORM%" || exit /B 1 )
 if not exist "%OUTPUT_DIR%\include"              ( mkdir "%OUTPUT_DIR%\include"              || exit /B 1 )
 if not exist "%OUTPUT_DIR%\include\SDL2"         ( mkdir "%OUTPUT_DIR%\include\SDL2"         || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\%PLATFORM%"       ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%"       || exit /B 1 )
-if not exist "%OUTPUT_DIR%\pdb\%PLATFORM%"       ( mkdir "%OUTPUT_DIR%\pdb\%PLATFORM%"       || exit /B 1 )
+if not exist "%OUTPUT_DIR%\lib\debug\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || exit /B 1 )
 
 echo Copying files...
 
@@ -52,8 +50,8 @@ call :copy_dll "vorbis*"        && ^
 call :copy_dll "zlib*"          || ^
 exit /B 1
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\SDL2*.lib" "%OUTPUT_DIR%\debug\lib\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\zlib*.lib" "%OUTPUT_DIR%\debug\lib\%PLATFORM%" || ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\SDL2*.lib" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\zlib*.lib" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || ^
 exit /B 1
 
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\SDL2\*.*" "%OUTPUT_DIR%\include\SDL2" && ^
@@ -69,10 +67,10 @@ exit /B
 
 :copy_dll
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\bin\%~1.dll" "%OUTPUT_DIR%\debug\lib\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\bin\%~1.pdb" "%OUTPUT_DIR%\debug\pdb\%PLATFORM%" && ^
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\%~1.dll"       "%OUTPUT_DIR%\lib\%PLATFORM%"       && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\%~1.pdb"       "%OUTPUT_DIR%\pdb\%PLATFORM%"       || ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\bin\%~1.pdb"       "%OUTPUT_DIR%\lib\%PLATFORM%"       && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\bin\%~1.dll" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\bin\%~1.pdb" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || ^
 exit /B 1
 
 exit /B

@@ -157,20 +157,19 @@ jobs:
         name: windows
         path: .output
         if-no-files-found: error
-    - name: Create combined packages
+    - name: Create a combined package
       if: ${{ github.event_name == 'push' }}
       run: |
         cd .output
-        zip -r windows_debug.zip */debug
-        zip -r windows_pdb.zip */pdb
-        zip -r windows.zip */include */lib
+        zip -r windows.zip sdl1 sdl2
     - uses: ncipollo/release-action@v1
       if: ${{ github.event_name == 'push' }}
       with:
-        artifacts: .output/windows_debug.zip, .output/windows_pdb.zip, .output/windows.zip
-        bodyFile: ./windows/RELEASE.md
+        artifacts: .output/windows.zip
+        body: |
+          `windows.zip` contains header files and libraries built in release and debug mode, as well as their `PDB` files
         token: ${{ secrets.GITHUB_TOKEN }}
-        name: Pre-built dependency packages for building fheroes2 for Windows
+        name: Pre-built dependency package for building fheroes2 for Windows
         tag: windows-deps
         allowUpdates: true
         artifactErrorsFailBuild: true
