@@ -168,7 +168,7 @@ jobs:
       if: ${{ github.event_name == 'push' }}
       with:
         artifacts: .output/windows_debug.zip, .output/windows_pdb.zip, .output/windows.zip
-        bodyFile: windows/RELEASE.md
+        bodyFile: ./windows/RELEASE.md
         token: ${{ secrets.GITHUB_TOKEN }}
         name: Pre-built dependency packages for building fheroes2 for Windows
         tag: windows-deps
