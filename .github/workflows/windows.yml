@@ -5,8 +5,8 @@ on:
 
 env:
   VCPKG_REPO: microsoft/vcpkg
-  # 19.07.2022
-  VCPKG_REF: ebf637bedb9c32bea2176f4488037875c0e935ba
+  # 10.08.2022
+  VCPKG_REF: 030c53833b977f1580b2a4817bb22edbdde606d4
 
 jobs:
   sdl1-core:
