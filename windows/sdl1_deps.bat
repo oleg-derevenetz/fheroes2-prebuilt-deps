@@ -18,6 +18,8 @@ exit /B 1
 
 echo Building dependencies...
 
+set VCPKG_ROOT=%VCPKG_DIR%
+
 "%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install libpng zlib || ^
 exit /B 1
 
