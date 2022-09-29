@@ -53,9 +53,10 @@ call :copy_dll "vorbis*"        && ^
 call :copy_dll "zlib*"          || ^
 exit /B 1
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\SDL2*.lib"   "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\libpng*.lib" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\zlib*.lib"   "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\SDL2*.lib"             "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\libpng*.lib"           "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\zlib*.lib"             "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\manual-link\SDL2*.lib" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || ^
 exit /B 1
 
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\SDL2\*.h"     "%OUTPUT_DIR%\include\SDL2"     && ^
@@ -67,9 +68,10 @@ xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\zconf.h"      "%OUTPUT_DIR%
 xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\zlib.h"       "%OUTPUT_DIR%\include"          || ^
 exit /B 1
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\SDL2*.lib"   "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\libpng*.lib" "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\zlib*.lib"   "%OUTPUT_DIR%\lib\%PLATFORM%" || ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\SDL2*.lib"             "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\libpng*.lib"           "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\zlib*.lib"             "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\manual-link\SDL2*.lib" "%OUTPUT_DIR%\lib\%PLATFORM%" || ^
 exit /B 1
 
 exit /B
