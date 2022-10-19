@@ -9,6 +9,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  windows:
-    name: Windows
-    uses: ./.github/workflows/windows.yml
+#  windows:
+#    name: Windows
+#    uses: ./.github/workflows/windows.yml
+
+  android:
+    name: Android
+    uses: ./.github/workflows/android.yml
