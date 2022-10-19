@@ -35,21 +35,24 @@ jobs:
     - name: Build
       run: |
         "$ANDROID_NDK_HOME/ndk-build" -C .android
-    - name: Create package directory
+    - name: Create package directories
       run: |
-        mkdir .output
+        mkdir -p .output/jni .output/thirdparty
     - name: Prepare SDL2 package
       run: |
-        cp -R android/SDL2 .output
-        mkdir -p .output/SDL2/libs
-        (cd .android/obj/local && cp --parents */libSDL2.so ../../../.output/SDL2/libs)
-        cp -R .android/jni/SDL2/include .output/SDL2
+        cp -R android/SDL2 .output/jni
+        mkdir -p .output/jni/SDL2/libs
+        (cd .android/obj/local && cp --parents */libSDL2.so ../../../.output/jni/SDL2/libs)
+        cp -R .android/jni/SDL2/include .output/jni/SDL2
+        mkdir -p .output/thirdparty/sdl2
+        cp -R .android/jni/SDL2/android-project/app/* .output/thirdparty/sdl2
+        rm -R .output/thirdparty/sdl2/jni
     - name: Prepare SDL2_mixer package
       run: |
-        cp -R android/SDL2_mixer .output
-        mkdir -p .output/SDL2_mixer/libs
-        (cd .android/obj/local && cp --parents */libSDL2_mixer.so ../../../.output/SDL2_mixer/libs)
-        cp -R .android/jni/SDL2_mixer/include .output/SDL2_mixer
+        cp -R android/SDL2_mixer .output/jni
+        mkdir -p .output/jni/SDL2_mixer/libs
+        (cd .android/obj/local && cp --parents */libSDL2_mixer.so ../../../.output/jni/SDL2_mixer/libs)
+        cp -R .android/jni/SDL2_mixer/include .output/jni/SDL2_mixer
     - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' }}
       with:
@@ -60,7 +63,7 @@ jobs:
       if: ${{ github.event_name == 'push' }}
       run: |
         cd .output
-        zip -r android.zip SDL2 SDL2_mixer
+        zip -r android.zip jni thirdparty
     - uses: ncipollo/release-action@v1
       if: ${{ github.event_name == 'push' }}
       with:
