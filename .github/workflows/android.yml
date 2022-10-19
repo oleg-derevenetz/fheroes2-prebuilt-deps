@@ -68,7 +68,7 @@ jobs:
       if: ${{ github.event_name == 'push' }}
       run: |
         cd .output
-        zip -r android.zip jni thirdparty
+        zip -r android.zip app sdl2
     - uses: ncipollo/release-action@v1
       if: ${{ github.event_name == 'push' }}
       with:
