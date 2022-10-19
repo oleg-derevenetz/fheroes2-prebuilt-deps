@@ -41,12 +41,12 @@ jobs:
     - name: Prepare SDL2 package
       run: |
         cp -R android/SDL2 .output
-        cp --parents .android/obj/local/*/libSDL2.so .output/SDL2
+        (cd .android/obj/local && cp --parents */libSDL2.so ../../../.output/SDL2)
         cp -R .android/jni/SDL2/include .output/SDL2
     - name: Prepare SDL2_mixer package
       run: |
         cp -R android/SDL2_mixer .output
-        cp --parents .android/obj/local/*/libSDL2_mixer.so .output/SDL2_mixer
+        (cd .android/obj/local && cp --parents */libSDL2_mixer.so ../../../.output/SDL2_mixer)
         cp -R .android/jni/SDL2_mixer/include .output/SDL2_mixer
     - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' }}
