@@ -1,0 +1,83 @@
+name: Android
+
+on:
+  push:
+    branches: [ master ]
+    paths: [ '.github/workflows/android.yml', 'android/**' ]
+  pull_request:
+    branches: [ master ]
+    paths: [ '.github/workflows/android.yml', 'android/**' ]
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SDL2_REPO: libsdl-org/SDL
+  SDL2_REF: release-2.24.1
+  #
+  SDL2_MIXER_REPO: libsdl-org/SDL_mixer
+  SDL2_MIXER_REF: release-2.6.2
+
+jobs:
+  android:
+    name: Create Android package
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create and prepare build directory
+      run: |
+        mkdir -p .android/jni
+        cp android/*.mk .android/jni
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ env.SDL2_REPO }}
+        ref: ${{ env.SDL2_REF }}
+        path: .android/jni/SDL2
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ env.SDL2_MIXER_REPO }}
+        ref: ${{ env.SDL2_MIXER_REF }}
+        path: .android/jni/SDL2_mixer
+        submodules: recursive
+    - name: Build
+      run: |
+        "$ANDROID_NDK_HOME/ndk-build" -C .android
+    - name: Create SDL2 package
+      run: |
+        mkdir -p .output/app/jni/SDL2/lib .output/sdl2/src/main
+        cp android/SDL2/Android.mk .output/app/jni/SDL2
+        (cd .android/obj/local && cp --parents -- */libSDL2.so ../../../.output/app/jni/SDL2/lib)
+        cp -R .android/jni/SDL2/include .output/app/jni/SDL2
+        cp android/SDL2/build.gradle .output/sdl2
+        cp -R android/SDL2/AndroidManifest.xml .android/jni/SDL2/android-project/app/src/main/java .output/sdl2/src/main
+    - name: Create SDL2_mixer package
+      run: |
+        mkdir -p .output/app/jni/SDL2_mixer/lib
+        cp android/SDL2_mixer/Android.mk .output/app/jni/SDL2_mixer
+        (cd .android/obj/local && cp --parents -- */libSDL2_mixer.so ../../../.output/app/jni/SDL2_mixer/lib)
+        cp -R .android/jni/SDL2_mixer/include .output/app/jni/SDL2_mixer
+    - uses: actions/upload-artifact@v3
+      if: ${{ github.event_name == 'pull_request' }}
+      with:
+        name: android
+        path: .output
+        if-no-files-found: error
+    - name: Create package archive
+      if: ${{ github.event_name == 'push' }}
+      run: |
+        cd .output
+        zip -r android.zip jni thirdparty
+    - uses: ncipollo/release-action@v1
+      if: ${{ github.event_name == 'push' }}
+      with:
+        artifacts: .output/android.zip
+        body: |
+          `android.zip` contains Java libraries and JNI modules that include header files and binary libraries
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Pre-built dependency package for building fheroes2 for Android
+        tag: android-deps
+        allowUpdates: true
+        artifactErrorsFailBuild: true
+        replacesArtifacts: true

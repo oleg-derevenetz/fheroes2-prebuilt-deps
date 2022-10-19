@@ -1,12 +1,21 @@
 name: Windows
 
 on:
-  workflow_call:
+  push:
+    branches: [ master ]
+    paths: [ '.github/workflows/windows.yml', 'windows/**' ]
+  pull_request:
+    branches: [ master ]
+    paths: [ '.github/workflows/windows.yml', 'windows/**' ]
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   VCPKG_REPO: microsoft/vcpkg
-  # 18.09.2022
-  VCPKG_REF: 01b29f6d8212bc845da64773b18665d682f5ab66
+  # 20.10.2022
+  VCPKG_REF: 030c53833b977f1580b2a4817bb22edbdde606d4
 
 jobs:
   sdl1-core:
@@ -17,14 +26,14 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v2
-    - name: Create a package directory
+    - uses: actions/checkout@v3
+    - name: Create package directory
       run: |
         mkdir -p .output/sdl1_core
     - name: Download binary packages
       run: |
         windows/sdl1_core.bat .output/sdl1_core
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: sdl1-core
         path: .output/sdl1_core
@@ -40,8 +49,8 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v2
-    - name: Create a package directory
+    - uses: actions/checkout@v3
+    - name: Create package directory
       run: |
         mkdir -p .output/sdl1_deps
     - name: Prepare vcpkg cache
@@ -63,16 +72,16 @@ jobs:
     - name: Build
       run: |
         windows/sdl1_deps.bat .vcpkg ${{ matrix.arch }} .output/sdl1_deps
-    - name: Get a list of files installed by vcpkg
+    - name: Get list of files installed by vcpkg
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       run: |
         ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
         name: sdl1-deps-${{ matrix.arch }}-vcpkg-installed-files
         path: .vcpkg/installed_files.txt
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: sdl1-deps-${{ matrix.arch }}
         path: .output/sdl1_deps
@@ -88,8 +97,8 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v2
-    - name: Create a package directory
+    - uses: actions/checkout@v3
+    - name: Create package directory
       run: |
         mkdir -p .output/sdl2
     - name: Prepare vcpkg cache
@@ -111,16 +120,16 @@ jobs:
     - name: Build
       run: |
         windows/sdl2.bat .vcpkg ${{ matrix.arch }} .output/sdl2
-    - name: Get a list of files installed by vcpkg
+    - name: Get list of files installed by vcpkg
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       run: |
         ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
         name: sdl2-${{ matrix.arch }}-vcpkg-installed-files
         path: .vcpkg/installed_files.txt
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: sdl2-${{ matrix.arch }}
         path: .output/sdl2
@@ -131,33 +140,33 @@ jobs:
     timeout-minutes: 10
     needs: [sdl1-core, sdl1-deps, sdl2]
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: sdl1-core
         path: .output/sdl1
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: sdl1-deps-x86
         path: .output/sdl1
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: sdl1-deps-x64
         path: .output/sdl1
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: sdl2-x86
         path: .output/sdl2
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: sdl2-x64
         path: .output/sdl2
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' }}
       with:
         name: windows
         path: .output
         if-no-files-found: error
-    - name: Create a combined package
+    - name: Create package archive
       if: ${{ github.event_name == 'push' }}
       run: |
         cd .output
@@ -167,7 +176,7 @@ jobs:
       with:
         artifacts: .output/windows.zip
         body: |
-          `windows.zip` contains header files and libraries built in release and debug mode, as well as their `PDB` files
+          `windows.zip` contains header files and libraries built in release and debug mode, as well as their PDB files
         token: ${{ secrets.GITHUB_TOKEN }}
         name: Pre-built dependency package for building fheroes2 for Windows
         tag: windows-deps
