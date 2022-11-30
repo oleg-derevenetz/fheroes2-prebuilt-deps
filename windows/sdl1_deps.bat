@@ -23,7 +23,6 @@ set VCPKG_ROOT=%VCPKG_DIR%
 "%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install libpng zlib || ^
 exit /B 1
 
-if not exist "%OUTPUT_DIR%\include"              ( mkdir "%OUTPUT_DIR%\include"              || exit /B 1 )
 if not exist "%OUTPUT_DIR%\include\libpng16"     ( mkdir "%OUTPUT_DIR%\include\libpng16"     || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\%PLATFORM%"       ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%"       || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\debug\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || exit /B 1 )

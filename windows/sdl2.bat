@@ -23,7 +23,6 @@ set VCPKG_ROOT=%VCPKG_DIR%
 "%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install libpng fluidsynth[buildtools,sndfile] sdl2 sdl2-mixer[fluidsynth,nativemidi] sdl2-image zlib || ^
 exit /B 1
 
-if not exist "%OUTPUT_DIR%\include"              ( mkdir "%OUTPUT_DIR%\include"              || exit /B 1 )
 if not exist "%OUTPUT_DIR%\include\SDL2"         ( mkdir "%OUTPUT_DIR%\include\SDL2"         || exit /B 1 )
 if not exist "%OUTPUT_DIR%\include\libpng16"     ( mkdir "%OUTPUT_DIR%\include\libpng16"     || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\%PLATFORM%"       ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%"       || exit /B 1 )

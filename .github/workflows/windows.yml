@@ -136,9 +136,12 @@ jobs:
         if-no-files-found: error
   merge:
     name: Merge and upload package
+    needs: [sdl1-core, sdl1-deps, sdl2]
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [sdl1-core, sdl1-deps, sdl2]
+    defaults:
+      run:
+        shell: bash
     steps:
     - uses: actions/download-artifact@v3
       with:

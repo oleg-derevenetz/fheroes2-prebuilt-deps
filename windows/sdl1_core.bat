@@ -19,9 +19,8 @@ call :download_archive "%SDL_URL%"       "%TEMP%\%SDL_FILE%"       "%SDL_FILE_SH
 call :download_archive "%SDL_MIXER_URL%" "%TEMP%\%SDL_MIXER_FILE%" "%SDL_MIXER_FILE_SHA256%" || ^
 exit /B 1
 
-if not exist "%OUTPUT_DIR%\include"        ( mkdir "%OUTPUT_DIR%\include"        || exit /B 1 )
-if not exist "%OUTPUT_DIR%\include\SDL"    ( mkdir "%OUTPUT_DIR%\include\SDL"    || exit /B 1 )
-if not exist "%OUTPUT_DIR%\lib\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%" || exit /B 1 )
+if not exist "%OUTPUT_DIR%\include\SDL" ( mkdir "%OUTPUT_DIR%\include\SDL" || exit /B 1 )
+if not exist "%OUTPUT_DIR%\lib"         ( mkdir "%OUTPUT_DIR%\lib"         || exit /B 1 )
 
 call :unpack_archive "%TEMP%\%SDL_FILE%"       "%TEMP%" && ^
 call :unpack_archive "%TEMP%\%SDL_MIXER_FILE%" "%TEMP%" || ^
