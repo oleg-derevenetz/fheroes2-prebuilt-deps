@@ -135,6 +135,11 @@ jobs:
         name: sdl2-${{ matrix.arch }}-glib-logs
         path: .vcpkg/buildtrees/glib/*.log
     - uses: actions/upload-artifact@v3
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
+      with:
+        name: sdl2-${{ matrix.arch }}-glib-issue-body
+        path: .vcpkg/installed/vcpkg/issue_body.md
+    - uses: actions/upload-artifact@v3
       with:
         name: sdl2-${{ matrix.arch }}
         path: .output/sdl2
