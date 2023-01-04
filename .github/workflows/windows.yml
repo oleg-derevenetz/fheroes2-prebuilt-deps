@@ -15,7 +15,7 @@ concurrency:
 env:
   VCPKG_REPO: microsoft/vcpkg
   # 02.12.2022
-  VCPKG_REF: 163fe7bd3d67c41200617caaa245b5ba2ba854e6
+  VCPKG_REF: 0f719b3fdfc36f8dd45229370a0df180fdbf68f6
 
 jobs:
   sdl1-core:
@@ -129,6 +129,11 @@ jobs:
       with:
         name: sdl2-${{ matrix.arch }}-vcpkg-installed-files
         path: .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v3
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
+      with:
+        name: sdl2-${{ matrix.arch }}-glib-logs
+        path: .vcpkg/buildtrees/glib/*.log
     - uses: actions/upload-artifact@v3
       with:
         name: sdl2-${{ matrix.arch }}

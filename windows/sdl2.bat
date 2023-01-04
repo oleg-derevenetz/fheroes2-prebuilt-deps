@@ -20,7 +20,7 @@ echo Building sdl2 and dependencies...
 
 set VCPKG_ROOT=%VCPKG_DIR%
 
-"%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install libpng fluidsynth[buildtools,sndfile] sdl2 sdl2-mixer[fluidsynth,nativemidi] sdl2-image zlib || ^
+"%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install glib || ^
 exit /B 1
 
 if not exist "%OUTPUT_DIR%\include\SDL2"         ( mkdir "%OUTPUT_DIR%\include\SDL2"         || exit /B 1 )
