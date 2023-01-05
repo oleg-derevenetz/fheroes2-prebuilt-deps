@@ -3,8 +3,14 @@ name: Windows
 on:
   push:
     branches: [ master ]
+    paths: [ '.github/workflows/windows.yml', 'windows/**' ]
   pull_request:
     branches: [ master ]
+    paths: [ '.github/workflows/windows.yml', 'windows/**' ]
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   VCPKG_REPO: microsoft/vcpkg
@@ -12,6 +18,74 @@ env:
   VCPKG_REF: 0f719b3fdfc36f8dd45229370a0df180fdbf68f6
 
 jobs:
+  sdl1-core:
+    name: Create SDL1 core package
+    runs-on: windows-2019
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create package directory
+      run: |
+        mkdir -p .output/sdl1_core
+    - name: Download binary packages
+      run: |
+        windows/sdl1_core.bat .output/sdl1_core
+    - uses: actions/upload-artifact@v3
+      with:
+        name: sdl1-core
+        path: .output/sdl1_core
+        if-no-files-found: error
+  sdl1-deps:
+    strategy:
+      matrix:
+        arch: [x86, x64]
+    name: Create SDL1 ${{ matrix.arch }} dependency package
+    runs-on: windows-2019
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create package directory
+      run: |
+        mkdir -p .output/sdl1_deps
+    - name: Prepare vcpkg cache
+      uses: actions/cache@v3
+      with:
+        path: ~/AppData/Local/vcpkg/archives
+        key: windows-sdl1-deps-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-${{ github.sha }}
+        restore-keys: |
+          windows-sdl1-deps-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-
+          windows-sdl1-deps-vcpkg-cache-${{ matrix.arch }}-
+    - uses: actions/checkout@v3
+      with:
+        repository: ${{ env.VCPKG_REPO }}
+        ref: ${{ env.VCPKG_REF }}
+        path: .vcpkg
+    - name: Bootstrap vcpkg
+      run: |
+        .vcpkg/bootstrap-vcpkg.bat
+    - name: Build
+      run: |
+        windows/sdl1_deps.bat .vcpkg ${{ matrix.arch }} .output/sdl1_deps
+    - name: Get list of files installed by vcpkg
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
+      run: |
+        ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v3
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
+      with:
+        name: sdl1-deps-${{ matrix.arch }}-vcpkg-installed-files
+        path: .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v3
+      with:
+        name: sdl1-deps-${{ matrix.arch }}
+        path: .output/sdl1_deps
+        if-no-files-found: error
   sdl2:
     strategy:
       matrix:
@@ -24,6 +98,17 @@ jobs:
         shell: bash
     steps:
     - uses: actions/checkout@v3
+    - name: Create package directory
+      run: |
+        mkdir -p .output/sdl2
+    - name: Prepare vcpkg cache
+      uses: actions/cache@v3
+      with:
+        path: ~/AppData/Local/vcpkg/archives
+        key: windows-sdl2-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-${{ github.sha }}
+        restore-keys: |
+          windows-sdl2-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-
+          windows-sdl2-vcpkg-cache-${{ matrix.arch }}-
     - uses: actions/checkout@v3
       with:
         repository: ${{ env.VCPKG_REPO }}
@@ -34,7 +119,16 @@ jobs:
         .vcpkg/bootstrap-vcpkg.bat
     - name: Build
       run: |
-        .vcpkg/vcpkg install glib
+        windows/sdl2.bat .vcpkg ${{ matrix.arch }} .output/sdl2
+    - name: Get list of files installed by vcpkg
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
+      run: |
+        ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
+    - uses: actions/upload-artifact@v3
+      if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
+      with:
+        name: sdl2-${{ matrix.arch }}-vcpkg-installed-files
+        path: .vcpkg/installed_files.txt
     - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
@@ -45,3 +139,60 @@ jobs:
       with:
         name: sdl2-${{ matrix.arch }}-glib-issue-body
         path: .vcpkg/installed/vcpkg/issue_body.md
+    - uses: actions/upload-artifact@v3
+      with:
+        name: sdl2-${{ matrix.arch }}
+        path: .output/sdl2
+        if-no-files-found: error
+  merge:
+    name: Merge and upload package
+    needs: [sdl1-core, sdl1-deps, sdl2]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: sdl1-core
+        path: .output/sdl1
+    - uses: actions/download-artifact@v3
+      with:
+        name: sdl1-deps-x86
+        path: .output/sdl1
+    - uses: actions/download-artifact@v3
+      with:
+        name: sdl1-deps-x64
+        path: .output/sdl1
+    - uses: actions/download-artifact@v3
+      with:
+        name: sdl2-x86
+        path: .output/sdl2
+    - uses: actions/download-artifact@v3
+      with:
+        name: sdl2-x64
+        path: .output/sdl2
+    - uses: actions/upload-artifact@v3
+      if: ${{ github.event_name == 'pull_request' }}
+      with:
+        name: windows
+        path: .output
+        if-no-files-found: error
+    - name: Create package archive
+      if: ${{ github.event_name == 'push' }}
+      run: |
+        cd .output
+        zip -r windows.zip sdl1 sdl2
+    - uses: ncipollo/release-action@v1
+      if: ${{ github.event_name == 'push' }}
+      with:
+        artifacts: .output/windows.zip
+        body: |
+          `windows.zip` contains header files and libraries built in release and debug mode, as well as their PDB files
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Pre-built dependency package for building fheroes2 for Windows
+        tag: windows-deps
+        allowUpdates: true
+        artifactErrorsFailBuild: true
+        replacesArtifacts: true
