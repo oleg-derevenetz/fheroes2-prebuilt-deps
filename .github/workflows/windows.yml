@@ -12,8 +12,11 @@ env:
   VCPKG_REF: 0f719b3fdfc36f8dd45229370a0df180fdbf68f6
 
 jobs:
-  glib:
-    name: Build glib
+  sdl2:
+    strategy:
+      matrix:
+        arch: [x86, x64]
+    name: Create SDL2 ${{ matrix.arch }} package
     runs-on: windows-2019
     timeout-minutes: 120
     defaults:
@@ -35,10 +38,10 @@ jobs:
     - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
-        name: glib-logs
+        name: sdl2-${{ matrix.arch }}-glib-logs
         path: .vcpkg/buildtrees/glib/*.log
     - uses: actions/upload-artifact@v3
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
-        name: glib-issue-body
+        name: sdl2-${{ matrix.arch }}-glib-issue-body
         path: .vcpkg/installed/vcpkg/issue_body.md
