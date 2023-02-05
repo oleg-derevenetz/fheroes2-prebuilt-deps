@@ -14,8 +14,8 @@ concurrency:
 
 env:
   VCPKG_REPO: microsoft/vcpkg
-  # 02.12.2022
-  VCPKG_REF: 163fe7bd3d67c41200617caaa245b5ba2ba854e6
+  # 05.02.2023
+  VCPKG_REF: 0ba60bfef5dea4cb2599daa7ad8364e309835a68
 
 jobs:
   sdl1-core:
@@ -66,6 +66,13 @@ jobs:
         repository: ${{ env.VCPKG_REPO }}
         ref: ${{ env.VCPKG_REF }}
         path: .vcpkg
+    - name: Apply vcpkg patches
+      run: |
+        for PATCH in windows/vcpkg_patches/*.patch; do
+            if [[ -f "$PATCH" ]]; then
+                patch -p1 -d .vcpkg < "$PATCH"
+            fi
+        done
     - name: Bootstrap vcpkg
       run: |
         .vcpkg/bootstrap-vcpkg.bat
@@ -114,6 +121,13 @@ jobs:
         repository: ${{ env.VCPKG_REPO }}
         ref: ${{ env.VCPKG_REF }}
         path: .vcpkg
+    - name: Apply vcpkg patches
+      run: |
+        for PATCH in windows/vcpkg_patches/*.patch; do
+            if [[ -f "$PATCH" ]]; then
+                patch -p1 -d .vcpkg < "$PATCH"
+            fi
+        done
     - name: Bootstrap vcpkg
       run: |
         .vcpkg/bootstrap-vcpkg.bat

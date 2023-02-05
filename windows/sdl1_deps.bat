@@ -20,33 +20,26 @@ echo Building dependencies...
 
 set VCPKG_ROOT=%VCPKG_DIR%
 
-"%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install libpng zlib || ^
+"%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install zlib || ^
 exit /B 1
 
-if not exist "%OUTPUT_DIR%\include\libpng16"     ( mkdir "%OUTPUT_DIR%\include\libpng16"     || exit /B 1 )
+if not exist "%OUTPUT_DIR%\include"              ( mkdir "%OUTPUT_DIR%\include"              || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\%PLATFORM%"       ( mkdir "%OUTPUT_DIR%\lib\%PLATFORM%"       || exit /B 1 )
 if not exist "%OUTPUT_DIR%\lib\debug\%PLATFORM%" ( mkdir "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || exit /B 1 )
 
 echo Copying files...
 
-call :copy_dll "libpng*" && ^
-call :copy_dll "zlib*"   || ^
+call :copy_dll "zlib*" || ^
 exit /B 1
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\libpng*.lib" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\zlib*.lib"   "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\debug\lib\zlib*.lib" "%OUTPUT_DIR%\lib\debug\%PLATFORM%" || ^
 exit /B 1
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\libpng16\*.h" "%OUTPUT_DIR%\include\libpng16" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\png.h"        "%OUTPUT_DIR%\include"          && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\pngconf.h"    "%OUTPUT_DIR%\include"          && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\pnglibconf.h" "%OUTPUT_DIR%\include"          && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\zconf.h"      "%OUTPUT_DIR%\include"          && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\zlib.h"       "%OUTPUT_DIR%\include"          || ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\zconf.h" "%OUTPUT_DIR%\include" && ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\include\zlib.h"  "%OUTPUT_DIR%\include" || ^
 exit /B 1
 
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\libpng*.lib" "%OUTPUT_DIR%\lib\%PLATFORM%" && ^
-xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\zlib*.lib"   "%OUTPUT_DIR%\lib\%PLATFORM%" || ^
+xcopy /Y /Q "%VCPKG_DIR%\installed\%TRIPLET%\lib\zlib*.lib" "%OUTPUT_DIR%\lib\%PLATFORM%" || ^
 exit /B 1
 
 exit /B
