@@ -1,0 +1,25 @@
+diff --git a/ports/sdl2-image/portfile.cmake b/ports/sdl2-image/portfile.cmake
+index f1bbd9f72..db7aee735 100644
+--- a/ports/sdl2-image/portfile.cmake
++++ b/ports/sdl2-image/portfile.cmake
+@@ -25,7 +25,7 @@ vcpkg_cmake_configure(
+-        -DSDL2IMAGE_BACKEND_STB=OFF
++        -DSDL2IMAGE_BACKEND_STB=ON
+         -DSDL2IMAGE_DEPS_SHARED=OFF
+         -DSDL2IMAGE_SAMPLES=OFF
+         -DSDL2IMAGE_VENDORED=OFF
+ )
+ 
+ vcpkg_cmake_install()
+diff --git a/ports/sdl2-image/vcpkg.json b/ports/sdl2-image/vcpkg.json
+index 9c6194768..347410533 100644
+--- a/ports/sdl2-image/vcpkg.json
++++ b/ports/sdl2-image/vcpkg.json
+@@ -6,7 +6,6 @@
+   "homepage": "https://github.com/libsdl-org/SDL_image",
+   "license": "Zlib",
+   "dependencies": [
+-    "libpng",
+     "sdl2",
+     {
+       "name": "vcpkg-cmake",
