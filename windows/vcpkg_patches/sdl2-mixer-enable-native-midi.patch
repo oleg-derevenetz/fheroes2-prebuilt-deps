@@ -1,0 +1,13 @@
+diff --git a/ports/sdl2-mixer/portfile.cmake b/ports/sdl2-mixer/portfile.cmake
+index 0a592cc47..ba39cac00 100644
+--- a/ports/sdl2-mixer/portfile.cmake
++++ b/ports/sdl2-mixer/portfile.cmake
+@@ -40,7 +40,7 @@ vcpkg_cmake_configure(
+         -DSDL2MIXER_VORBIS_VORBISFILE_SHARED=OFF
+         -DSDL2MIXER_VORBIS="VORBISFILE"
+         -DSDL2MIXER_FLAC_DRFLAC=OFF
+-        -DSDL2MIXER_MIDI_NATIVE=OFF
++        -DSDL2MIXER_MIDI_NATIVE=ON
+         -DSDL2MIXER_MIDI_TIMIDITY=OFF
+         -DSDL2MIXER_MP3_DRMP3=OFF
+ )
