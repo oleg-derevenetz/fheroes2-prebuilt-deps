@@ -37,7 +37,7 @@ call :copy_dll "gobject*"       && ^
 call :copy_dll "gthread*"       && ^
 call :copy_dll "iconv*"         && ^
 call :copy_dll "intl*"          && ^
-call :copy_dll "libffi*"        && ^
+call :copy_dll "ffi*"           && ^
 call :copy_dll "libfluidsynth*" && ^
 call :copy_dll "libmp3lame*"    && ^
 call :copy_dll "mpg123*"        && ^

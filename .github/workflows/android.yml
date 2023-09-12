@@ -14,7 +14,7 @@ concurrency:
 
 env:
   SDL2_REPO: libsdl-org/SDL
-  SDL2_REF: release-2.28.2
+  SDL2_REF: release-2.28.3
   #
   SDL2_MIXER_REPO: libsdl-org/SDL_mixer
   SDL2_MIXER_REF: release-2.6.3
@@ -28,17 +28,17 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Create and prepare build directory
       run: |
         mkdir -p .android/jni
         cp android/*.mk .android/jni
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ${{ env.SDL2_REPO }}
         ref: ${{ env.SDL2_REF }}
         path: .android/jni/SDL2
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ${{ env.SDL2_MIXER_REPO }}
         ref: ${{ env.SDL2_MIXER_REF }}
