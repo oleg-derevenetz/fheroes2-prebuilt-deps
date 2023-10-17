@@ -14,7 +14,7 @@ concurrency:
 
 env:
   SDL2_REPO: libsdl-org/SDL
-  SDL2_REF: release-2.28.3
+  SDL2_REF: release-2.28.4
   #
   SDL2_MIXER_REPO: libsdl-org/SDL_mixer
   SDL2_MIXER_REF: release-2.6.3
