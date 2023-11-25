@@ -14,8 +14,8 @@ concurrency:
 
 env:
   VCPKG_REPO: microsoft/vcpkg
-  # 17.10.2023
-  VCPKG_REF: 621b7abe07d61f565795d15fb829caf8dcde0c18
+  # 25.11.2023
+  VCPKG_REF: cd5e746ec203c8c3c61647e0886a8df8c1e78e41
 
 jobs:
   sdl2:
