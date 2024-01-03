@@ -61,7 +61,7 @@ jobs:
         cp android/SDL2_mixer/Android.mk .output/app/jni/SDL2_mixer
         (cd .android/obj/local && cp --parents -- */libSDL2_mixer.so ../../../.output/app/jni/SDL2_mixer/lib)
         cp -R .android/jni/SDL2_mixer/include .output/app/jni/SDL2_mixer
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: ${{ github.event_name == 'pull_request' }}
       with:
         name: android

@@ -63,12 +63,12 @@ jobs:
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       run: |
         ls -lR .vcpkg/installed > .vcpkg/installed_files.txt
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: ${{ github.event_name == 'pull_request' && ( success() || failure() ) }}
       with:
         name: sdl2-${{ matrix.arch }}-vcpkg-installed-files
         path: .vcpkg/installed_files.txt
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: sdl2-${{ matrix.arch }}
         path: .output/sdl2
@@ -90,7 +90,7 @@ jobs:
       with:
         name: sdl2-x64
         path: .output/sdl2
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: ${{ github.event_name == 'pull_request' }}
       with:
         name: windows
