@@ -82,11 +82,11 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: sdl2-x86
         path: .output/sdl2
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: sdl2-x64
         path: .output/sdl2
