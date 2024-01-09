@@ -20,6 +20,6 @@ index 9c6194768..347410533 100644
    "license": "Zlib",
    "dependencies": [
 -    "libpng",
-     "sdl2",
      {
-       "name": "vcpkg-cmake",
+       "name": "sdl2",
+       "default-features": false
