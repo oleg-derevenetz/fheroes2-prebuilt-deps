@@ -34,7 +34,7 @@ jobs:
       run: |
         mkdir -p .output/sdl2
     - name: Prepare vcpkg cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/AppData/Local/vcpkg/archives
         key: windows-sdl2-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-${{ github.sha }}
