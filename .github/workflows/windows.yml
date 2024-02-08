@@ -12,10 +12,13 @@ concurrency:
   group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 env:
   VCPKG_REPO: microsoft/vcpkg
-  # 09.01.2024
-  VCPKG_REF: 3bc5ff7f7ab72b57f0945d35bbbdaac2060bc268
+  # 08.02.2024
+  VCPKG_REF: 3f806e04fdcf30df33c7b445590c9ac13afef946
 
 jobs:
   sdl2:

@@ -47,6 +47,7 @@ call :copy_dll "pcre*"          && ^
 call :copy_dll "SDL2*"          && ^
 call :copy_dll "sndfile*"       && ^
 call :copy_dll "vorbis*"        && ^
+call :copy_dll "wavpack*"       && ^
 call :copy_dll "zlib*"          || ^
 exit /B 1
 
