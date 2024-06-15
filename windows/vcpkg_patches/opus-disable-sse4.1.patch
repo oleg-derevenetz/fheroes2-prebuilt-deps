@@ -1,0 +1,12 @@
+diff --git a/ports/opus/portfile.cmake b/ports/opus/portfile.cmake
+index 747daa355..98cbd3049 100644
+--- a/ports/opus/portfile.cmake
++++ b/ports/opus/portfile.cmake
+@@ -36,6 +36,7 @@ vcpkg_cmake_configure(
+         -DOPUS_INSTALL_CMAKE_CONFIG_MODULE=ON
+         -DOPUS_BUILD_PROGRAMS=OFF
+         -DOPUS_BUILD_TESTING=OFF
++        -DOPUS_X86_MAY_HAVE_SSE4_1=OFF
+         ${ADDITIONAL_OPUS_OPTIONS}
+     MAYBE_UNUSED_VARIABLES
+         OPUS_USE_NEON
