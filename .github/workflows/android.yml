@@ -17,7 +17,7 @@ permissions:
 
 env:
   SDL2_REPO: libsdl-org/SDL
-  SDL2_REF: release-2.30.5
+  SDL2_REF: release-2.30.7
   #
   SDL2_MIXER_REPO: libsdl-org/SDL_mixer
   SDL2_MIXER_REF: release-2.8.0
@@ -70,6 +70,7 @@ jobs:
         name: android
         path: .output
         if-no-files-found: error
+        include-hidden-files: true
     - name: Create package archive
       if: ${{ github.event_name == 'push' }}
       run: |
