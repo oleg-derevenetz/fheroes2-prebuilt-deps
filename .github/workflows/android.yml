@@ -17,7 +17,7 @@ permissions:
 
 env:
   SDL2_REPO: libsdl-org/SDL
-  SDL2_REF: release-2.30.7
+  SDL2_REF: release-2.30.8
   #
   SDL2_MIXER_REPO: libsdl-org/SDL_mixer
   SDL2_MIXER_REF: release-2.8.0
