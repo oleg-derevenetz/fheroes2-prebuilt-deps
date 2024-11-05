@@ -1,12 +1,14 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 android {
     namespace 'org.libsdl.app'
 
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 34
+        minSdk 21
+        targetSdk 35
     }
 }

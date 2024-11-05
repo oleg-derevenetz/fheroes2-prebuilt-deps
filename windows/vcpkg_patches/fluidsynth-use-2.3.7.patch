@@ -1,0 +1,62 @@
+diff --git a/ports/fluidsynth/portfile.cmake b/ports/fluidsynth/portfile.cmake
+index 830275044..ee1562aea 100644
+--- a/ports/fluidsynth/portfile.cmake
++++ b/ports/fluidsynth/portfile.cmake
+@@ -10,7 +10,7 @@ vcpkg_from_github(
+     OUT_SOURCE_PATH SOURCE_PATH
+     REPO FluidSynth/fluidsynth
+     REF "v${VERSION}"
+-    SHA512 57770597e26140011324cac14dd81aa1f5fc52ec0c256a4e16f629b81b8d477279ad714cc9d1e375d74aabb348e1436eafd06746cdf10fa29196468645bf7600
++    SHA512 f5fd5ddbc4d30ded258ae3d04ba5981ce8da1132c5d93faf1e8745a9d9f89c9fb3365f0447b94e0fe0e9b032c789fcbd6e647a65a50d1f76179b53a76683d004
+     HEAD_REF master
+     PATCHES
+         gentables.patch
+@@ -30,7 +30,7 @@ set(WINDOWS_OPTIONS enable-dsound enable-wasapi enable-waveout enable-winmidi HA
+ set(MACOS_OPTIONS enable-coreaudio enable-coremidi COREAUDIO_FOUND COREMIDI_FOUND)
+ set(LINUX_OPTIONS enable-alsa ALSA_FOUND)
+ set(ANDROID_OPTIONS enable-opensles OpenSLES_FOUND)
+-set(IGNORED_OPTIONS enable-coverage enable-dbus enable-floats enable-fpe-check enable-framework enable-jack
++set(IGNORED_OPTIONS enable-coverage enable-dbus enable-floats enable-fpe-check enable-framework enable-jack enable-lash
+     enable-libinstpatch enable-midishare enable-oboe enable-openmp enable-oss enable-pipewire enable-portaudio
+     enable-profiling enable-readline enable-sdl2 enable-systemd enable-trap-on-fpe enable-ubsan)
+ 
+diff --git a/ports/fluidsynth/vcpkg.json b/ports/fluidsynth/vcpkg.json
+index c77c1f785..7a042723f 100644
+--- a/ports/fluidsynth/vcpkg.json
++++ b/ports/fluidsynth/vcpkg.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "fluidsynth",
+-  "version": "2.4.0",
++  "version": "2.3.7",
+   "description": "FluidSynth reads and handles MIDI events from the MIDI input device. It is the software analogue of a MIDI synthesizer. FluidSynth can also play midifiles using a Soundfont.",
+   "homepage": "https://github.com/FluidSynth/fluidsynth",
+   "license": "LGPL-2.1-or-later",
+diff --git a/versions/baseline.json b/versions/baseline.json
+index b500bf559..e0b99672d 100644
+--- a/versions/baseline.json
++++ b/versions/baseline.json
+@@ -2829,7 +2829,7 @@
+       "port-version": 0
+     },
+     "fluidsynth": {
+-      "baseline": "2.4.0",
++      "baseline": "2.3.7",
+       "port-version": 0
+     },
+     "flux": {
+diff --git a/versions/f-/fluidsynth.json b/versions/f-/fluidsynth.json
+index 0b8da54ed..19f4aa248 100644
+--- a/versions/f-/fluidsynth.json
++++ b/versions/f-/fluidsynth.json
+@@ -1,10 +1,5 @@
+ {
+   "versions": [
+-    {
+-      "git-tree": "46142e635f474dcc2f3c47fa6df45885bbacccac",
+-      "version": "2.4.0",
+-      "port-version": 0
+-    },
+     {
+       "git-tree": "9d1d73e0677d9043b340490e8d4aa34dd5d07ccc",
+       "version": "2.3.7",
