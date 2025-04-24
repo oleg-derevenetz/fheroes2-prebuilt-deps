@@ -6,3 +6,5 @@ APP_PLATFORM := android-21
 SUPPORT_MID_TIMIDITY := true
 # Build SDL2_mixer without WavPack
 SUPPORT_WAVPACK := false
+# Build SDL2_mixer without GME
+SUPPORT_GME := false
