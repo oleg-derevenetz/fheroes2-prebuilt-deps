@@ -26,7 +26,7 @@ jobs:
       matrix:
         arch: [x86, x64]
     name: Create SDL2 ${{ matrix.arch }} package
-    runs-on: windows-2019
+    runs-on: windows-2022
     timeout-minutes: 120
     defaults:
       run:

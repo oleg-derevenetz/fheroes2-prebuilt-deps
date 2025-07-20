@@ -9,13 +9,13 @@ set VCPKG_DIR=%~1
 set PLATFORM=%~2
 set OUTPUT_DIR=%~3
 
-set TRIPLET=%PLATFORM%-windows
+set TRIPLET=%PLATFORM%-windows-v142
 
 echo Building sdl2 and dependencies...
 
 set VCPKG_ROOT=%VCPKG_DIR%
 
-"%VCPKG_DIR%\vcpkg" --triplet "%TRIPLET%" install sdl2 sdl2-mixer[core,libflac,mpg123,opusfile,timidity] sdl2-image zlib || ^
+"%VCPKG_DIR%\vcpkg" --overlay-triplets=windows\vcpkg_overlay_triplets --triplet "%TRIPLET%" install sdl2 sdl2-mixer[core,libflac,mpg123,opusfile,timidity] sdl2-image zlib || ^
 exit /B 1
 
 if not exist "%OUTPUT_DIR%\include\SDL2"         ( mkdir "%OUTPUT_DIR%\include\SDL2"         || exit /B 1 )
