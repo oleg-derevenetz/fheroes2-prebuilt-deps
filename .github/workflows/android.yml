@@ -31,17 +31,17 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Create and prepare build directory
       run: |
         mkdir -p .android/jni
         cp android/*.mk .android/jni
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         repository: ${{ env.SDL2_REPO }}
         ref: ${{ env.SDL2_REF }}
         path: .android/jni/SDL2
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         repository: ${{ env.SDL2_MIXER_REPO }}
         ref: ${{ env.SDL2_MIXER_REF }}

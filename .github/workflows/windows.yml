@@ -32,7 +32,7 @@ jobs:
       run:
         shell: bash
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Create package directory
       run: |
         mkdir -p .output/sdl2
@@ -44,7 +44,7 @@ jobs:
         restore-keys: |
           windows-sdl2-vcpkg-cache-${{ matrix.arch }}-${{ env.VCPKG_REF }}-
           windows-sdl2-vcpkg-cache-${{ matrix.arch }}-
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         repository: ${{ env.VCPKG_REPO }}
         ref: ${{ env.VCPKG_REF }}
